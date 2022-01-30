@@ -1,6 +1,8 @@
 import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
+import RushingTable from "./Components/Table";
+
 const App = () => {
   return (
     <div className="m-5">
@@ -11,6 +13,9 @@ const App = () => {
           </Col>
           <Col md={{ span: 4, offset: 4 }}></Col>
         </Row>
+        <div>
+          <RushingTable />
+        </div>
       </Container>
     </div>
   );
