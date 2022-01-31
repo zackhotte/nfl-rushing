@@ -17,4 +17,4 @@ type PlayerStats = {
   fumbles: number;
 };
 
-export default PlayerStats;
+export type { PlayerStats };

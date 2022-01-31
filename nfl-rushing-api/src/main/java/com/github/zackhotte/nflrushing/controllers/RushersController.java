@@ -1,5 +1,6 @@
 package com.github.zackhotte.nflrushing.controllers;
 
+import com.github.zackhotte.nflrushing.controllers.requests.RequestParam;
 import com.github.zackhotte.nflrushing.models.Rusher;
 import com.github.zackhotte.nflrushing.repositories.RusherRepository;
 
@@ -16,7 +17,12 @@ public class RushersController {
     private RusherRepository rusherRepository;
 
     @GetMapping
-    public Iterable<Rusher> getRushers() {
+    public Iterable<Rusher> getRushers(RequestParam params) {
+        if (params.hasName()) {
+            var name = params.getName().toLowerCase();
+            return rusherRepository.findAllByPlayerName(name);
+        }
+
         return rusherRepository.findAll();
     }
 
