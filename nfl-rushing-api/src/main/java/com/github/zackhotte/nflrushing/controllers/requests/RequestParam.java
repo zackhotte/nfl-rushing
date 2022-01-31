@@ -1,7 +1,5 @@
 package com.github.zackhotte.nflrushing.controllers.requests;
 
-import java.util.Optional;
-
 import lombok.Data;
 
 @Data

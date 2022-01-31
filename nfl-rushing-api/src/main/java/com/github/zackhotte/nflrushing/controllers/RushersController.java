@@ -5,6 +5,8 @@ import com.github.zackhotte.nflrushing.models.Rusher;
 import com.github.zackhotte.nflrushing.repositories.RusherRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,13 +19,12 @@ public class RushersController {
     private RusherRepository rusherRepository;
 
     @GetMapping
-    public Iterable<Rusher> getRushers(RequestParam params) {
+    public Page<Rusher> getRushers(RequestParam params, Pageable pageable) {
         if (params.hasName()) {
             var name = params.getName().toLowerCase();
-            return rusherRepository.findAllByPlayerName(name);
+            return rusherRepository.findAllByPlayerName(name, pageable);
         }
 
-        return rusherRepository.findAll();
+        return rusherRepository.findAll(pageable);
     }
-
 }
