@@ -1,6 +1,6 @@
 type Response<T> = {
   content: T[];
-  pageable: Pageable;
+  pageable?: Pageable;
   empty: boolean;
   first: boolean;
   last: boolean;
@@ -9,7 +9,7 @@ type Response<T> = {
   size: number;
   sort: Sortable;
   totalElements: number;
-  totalPages: 33;
+  totalPages: number;
 };
 
 type Sortable = {
