@@ -1,6 +1,7 @@
 package com.github.zackhotte.nflrushing.services;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -35,37 +36,48 @@ public class RushingService {
     }
 
     public Page<Rusher> getAll(Pageable pageable) {
-        var rushers = rusherRepository.findAll(pageable);
+        var longestRunSortable = getSortingFieldByLongestRun(pageable);
+        if (longestRunSortable.isPresent()) {
+            var rushers = rusherRepository.getAllRushers();
 
-        return process(rushers, pageable);
+            return sortLongestRun(rushers, longestRunSortable.get(), pageable);
+        }
+
+        return rusherRepository.findAll(pageable);
     }
 
     public Page<Rusher> getAll(String playerName, Pageable pageable) {
-        var rushers = rusherRepository.findAllByPlayerName(playerName.toLowerCase(), pageable);
+        var longestRunSortable = getSortingFieldByLongestRun(pageable);
+        if (longestRunSortable.isPresent()) {
+            var rushers = rusherRepository.getAllRushersByPlayerName(playerName.toLowerCase());
 
-        return process(rushers, pageable);
-    }
-
-    private Page<Rusher> process(Page<Rusher> rushers, Pageable pageable) {
-        var order = getSortingField(pageable, CUSTOM_SORTING_FIELD);
-        if (order.isPresent()) {
-            var direction = order.get().getDirection();
-            return new PageImpl<>(
-                    rushers.getContent().stream().sorted(longestRunCustomSorter(direction))
-                            .collect(Collectors.toList()),
-                    pageable,
-                    rushers.getTotalElements());
+            return sortLongestRun(rushers, longestRunSortable.get(), pageable);
         }
 
-        return rushers;
+        return rusherRepository.findAllByPlayerName(playerName.toLowerCase(), pageable);
     }
 
-    private Optional<Order> getSortingField(Pageable pageable, String fieldName) {
+    private Page<Rusher> sortLongestRun(List<Rusher> rushers, Order order, Pageable pageable) {
+        var direction = order.getDirection();
+        var size = pageable.getPageSize();
+        var page = pageable.getPageNumber() * (long) size;
+        var totalElements = rushers.size();
+
+        var orderedRushers = rushers.stream()
+            .sorted(longestRunCustomSorter(direction))
+            .skip(page)
+            .limit(size)
+            .collect(Collectors.toList());
+
+        return new PageImpl<>(orderedRushers, pageable, totalElements);
+    }
+
+    private Optional<Order> getSortingFieldByLongestRun(Pageable pageable) {
         var sort = pageable.getSort();
         for (var order : sort) {
             var prop = order.getProperty();
 
-            if (prop.equalsIgnoreCase(fieldName)) {
+            if (prop.equalsIgnoreCase(CUSTOM_SORTING_FIELD)) {
                 return Optional.of(order);
             }
         }
