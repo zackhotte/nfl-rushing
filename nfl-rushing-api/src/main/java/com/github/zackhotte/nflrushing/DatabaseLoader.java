@@ -1,5 +1,6 @@
 package com.github.zackhotte.nflrushing;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.zackhotte.nflrushing.models.Rusher;
 import com.github.zackhotte.nflrushing.repositories.RusherRepository;
@@ -9,6 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class DatabaseLoader implements CommandLineRunner {
@@ -21,13 +26,24 @@ public class DatabaseLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        var rushers = getRushers(resourceFile);
+
+        rusherRepository.saveAll(rushers);
+    }
+
+    public static JsonNode loadData(Resource resourceFile) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         var in = resourceFile.getInputStream();
-        var root = mapper.readTree(in);
+        return mapper.readTree(in);
+    }
 
+    public static List<Rusher> getRushers(Resource resourceFile) throws IOException {
+        var root = DatabaseLoader.loadData(resourceFile);
+        List<Rusher> rushers = new ArrayList<>();
         for (var node : root) {
-            var rusher = Rusher.fromJson(node);
-            rusherRepository.save(rusher);
+            rushers.add(Rusher.fromJson(node));
         }
+
+        return rushers;
     }
 }
