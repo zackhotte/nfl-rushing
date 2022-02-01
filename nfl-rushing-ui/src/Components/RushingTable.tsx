@@ -10,7 +10,7 @@ const columnMap = {
   id: "Id",
   player: "Player",
   team: "Team",
-  postion: "Pos",
+  position: "Pos",
   attempts: "Att/G",
   attemptsPerGame: "Att",
   yards: "Yds",
@@ -106,17 +106,16 @@ const RushingTable: React.FC = () => {
     selectedColumn: TableColumn<PlayerStats>,
     sortOrder: SortOrder
   ): Promise<void> => {
-    const { sortField } = selectedColumn;
-    const dir: Direction =
-    sortOrder === "asc" ? Direction.ASC : Direction.DESC;
+    const sortingField = selectedColumn.sortField;
+    const dir: Direction = sortOrder === "asc" ? Direction.ASC : Direction.DESC;
 
-    setSortField(sortField);
+    setSortField(sortingField);
     setSortDirection(dir);
 
     const { content: rushingPlayers } = await getAllRushers({
       size,
       page,
-      sort: sortField,
+      sort: sortingField,
       dir,
     });
 

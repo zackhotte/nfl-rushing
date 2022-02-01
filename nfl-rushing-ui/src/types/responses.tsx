@@ -31,7 +31,7 @@ type PlayerStats = {
   id: number;
   player: string;
   team: string;
-  postion: string;
+  position: string;
   attempts: number;
   attemptsPerGame: number;
   yards: number;
