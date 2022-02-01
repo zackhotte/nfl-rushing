@@ -58,12 +58,15 @@ const RushingTable: React.FC = () => {
   const [totalNumberOfRecords, setTotalNumberOfRecords] = useState<number>(0);
   const [page, setPage] = useState<number>(0);
 
+  const [sortField, setSortField] = useState<string | undefined | null>(null);
+  const [sortDirection, setSortDirection] = useState<Direction>(Direction.DESC);
+
   const getAllPlayers = async (): Promise<void> => {
     const { content: rushingPlayers, totalElements } = await getAllRushers({
       size,
       page,
-      sort: "yards",
-      dir: Direction.DESC,
+      sort: sortField,
+      dir: sortDirection,
     });
 
     if (columns.length === 0) {
@@ -78,6 +81,8 @@ const RushingTable: React.FC = () => {
     const { content: rushingPlayers } = await getAllRushers({
       size,
       page: --pageNumber,
+      sort: sortField,
+      dir: sortDirection,
     });
 
     setPlayers(rushingPlayers);
@@ -99,13 +104,15 @@ const RushingTable: React.FC = () => {
 
   const handleSort = async (
     selectedColumn: TableColumn<PlayerStats>,
-    sortDirection: SortOrder
+    sortOrder: SortOrder
   ): Promise<void> => {
     const { sortField } = selectedColumn;
     const dir: Direction =
-      sortDirection === "asc" ? Direction.ASC : Direction.DESC;
+    sortOrder === "asc" ? Direction.ASC : Direction.DESC;
 
-    console.log(selectedColumn);
+    setSortField(sortField);
+    setSortDirection(dir);
+
     const { content: rushingPlayers } = await getAllRushers({
       size,
       page,
