@@ -1,7 +1,7 @@
 import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
-import RushingTable from "./Components/Table";
+import RushingTable from "./Components/RushingTable";
 
 const App = () => {
   return (
