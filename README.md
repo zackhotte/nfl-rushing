@@ -54,4 +54,54 @@ We will evaluate you on your ability to solve the problem defined in the require
 If you have any questions regarding requirements, do not hesitate to email your contact at theScore for clarification.
 
 ### Installation and running this solution
-... TODO
+
+The project uses [React](https://reactjs.org/) for the UI and [Spring Boot](https://spring.io/projects/spring-boot) as an API
+
+If you simply want to run the app to access the NFL Rushing stats table, there are two main ways to run this project:
+
+1. **Docker**<br/>
+    If you have [Docker](https://docs.docker.com/get-docker/) installed on your local machine, you can simply build the local image and then run it:
+
+    ```bash
+    $ docker image build -t nflrusing .
+    $ docker container run -d -p 8080:8080 --name nflrushing nflrushing
+    ```
+    Afterwards, you can navigate to [http://localhost:8080](http://localhost:8080/) to view the nfl-rushing stats UI
+
+2. **Scripts**<br/>
+    At the root of the directory are two scripts, a bash file for macOS/Linux, and a batch file for Windows.
+
+    Before you can run these scripts however, you will need the following dependencies installed on your machine:
+    - [Node](https://nodejs.org/en/download/) - latest stable version
+    - [Java](https://adoptopenjdk.net/) - Version 11
+
+    After you have installed all dependencies, you can simply execute one of the following `run` scripts:
+
+    ```bash
+    # macOS / Linux
+    $ ./run.sh
+    
+    # Windows
+    run.bat
+    ```
+
+    The scripts will install and compile both services and then start the Spring Boot server which can then be access on [http://localhost:8080](http://localhost:8080)
+
+If you just want to run a development version of the app to add features/debug issues, First, in the `nfl-rushing-ui` directory, you can run the following commands to start the `create-react-app` development server:
+
+```bash
+$ npm install 
+$ npm start
+```
+
+For the `nfl-rushing-api` directory, you can either import the directory into an IDE like [IntelliJ](https://www.jetbrains.com/idea/) or with a code editor like [Visual Studio Code](https://code.visualstudio.com/) (with the VS Code [Java Extension](https://code.visualstudio.com/docs/java/extensions) installed)
+
+Or, you can manually compile and run the API with Maven and the Java Runtime with the CLI:
+
+```bash
+$ mvn -Dmaven.test.skip clean package
+# Or, you can use the maven wrapper in the directory
+$ ./mvnw -Dmaven.test.skip clean package
+
+$ java -jar target/nflrushing-0.0.1-SNAPSHOT.jar
+```
