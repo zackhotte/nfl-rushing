@@ -63,10 +63,19 @@ If you simply want to run the app to access the NFL Rushing stats table, there a
     If you have [Docker](https://docs.docker.com/get-docker/) installed on your local machine, you can simply build the local image and then run it:
 
     ```bash
-    $ docker image build -t nflrusing .
+    $ docker image build -t nflrushing .
     $ docker container run -d -p 8080:8080 --name nflrushing nflrushing
     ```
-    Afterwards, you can navigate to [http://localhost:8080](http://localhost:8080/) to view the nfl-rushing stats UI
+    Afterwards, you can navigate to [http://localhost:8080](http://localhost:8080/) to view the nfl-rushing stats UI.<br/><br/>
+    Also, if the API will be running on a host or port that is different from `localhost` or `8080`, then you can set the API's URL with the following build arg:
+    ```bash
+    $ docker image build --build-arg API_URL=http://custom.host:port -t nflrushing .
+    ```
+    > <small>NOTE: if you are on **Windows 8/10 Home** and are using the old Docker Toolbox software, you may need to access the app via [http://192.168.99.100:8080](http://192.168.99.100:8080), you will also need to include it in the --build-arg parameter as follows:
+    ```bash
+    docker image build --build-arg API_URL=http://192.168.99.100:8080 -t nflrushing .
+    ```
+    </small>
 
 2. **Scripts**<br/>
     At the root of the directory are two scripts, a bash file for macOS/Linux, and a batch file for Windows.
@@ -96,7 +105,7 @@ $ npm start
 
 For the `nfl-rushing-api` directory, you can either import the directory into an IDE like [IntelliJ](https://www.jetbrains.com/idea/) or with a code editor like [Visual Studio Code](https://code.visualstudio.com/) (with the VS Code [Java Extension](https://code.visualstudio.com/docs/java/extensions) installed)
 
-Or, you can manually compile and run the API with Maven and the Java Runtime with the CLI:
+Or, you can manually compile and run the API with [Maven](https://maven.apache.org/) and the Java Runtime using the CLI:
 
 ```bash
 $ mvn -Dmaven.test.skip clean package

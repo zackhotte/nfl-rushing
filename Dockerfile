@@ -1,22 +1,26 @@
 FROM node:14 AS ui
 
+WORKDIR /src/app/ui
+
 COPY nfl-rushing-ui .
 
-RUN npm install && \
-    npm run build
+RUN npm install
+
+ARG API_URL="http://localhost:8080"
+RUN REACT_APP_API_URL=$API_URL npm run build
 
 FROM openjdk:11 AS api
 
-COPY . .
+WORKDIR /src/app/api
 
-WORKDIR /nfl-rushing-api
+COPY nfl-rushing-api .
 
-RUN apt-get update -y && apt-get install --no-install-recommends -y maven=3.8.4 \
+RUN apt-get update -y && apt-get install --no-install-recommends -y maven \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=ui build/index.html src/main/resources/templates
-COPY --from=ui build src/main/resources/static
+COPY --from=ui /src/app/ui/build/index.html src/main/resources/templates/index.html
+COPY --from=ui /src/app/ui/build src/main/resources/static
 
 RUN mvn -Dmaven.test.skip clean package
 
