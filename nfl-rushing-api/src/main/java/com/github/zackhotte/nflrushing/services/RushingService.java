@@ -27,33 +27,24 @@ public class RushingService {
     private RusherRepository rusherRepository;
 
     public Page<Rusher> getAll(RequestParam params, Pageable pageable) {
-        if (params.hasName()) {
-            var name = params.getName().toLowerCase();
-            return getAll(name, pageable);
-        }
-
-        return getAll(pageable);
-    }
-
-    public Page<Rusher> getAll(Pageable pageable) {
         var longestRunSortable = getSortingFieldByLongestRun(pageable);
+        var hasName = params.hasName();
         if (longestRunSortable.isPresent()) {
-            var rushers = rusherRepository.getAllRushers();
+            var rushers = hasName
+                ? rusherRepository.getAllRushersByPlayerName(params.getName().toLowerCase())
+                : rusherRepository.getAllRushers();
 
             return sortLongestRun(rushers, longestRunSortable.get(), pageable);
         }
 
+        return hasName ? getAll(params.getName().toLowerCase(), pageable) : getAll(pageable);
+    }
+
+    public Page<Rusher> getAll(Pageable pageable) {
         return rusherRepository.findAll(pageable);
     }
 
     public Page<Rusher> getAll(String playerName, Pageable pageable) {
-        var longestRunSortable = getSortingFieldByLongestRun(pageable);
-        if (longestRunSortable.isPresent()) {
-            var rushers = rusherRepository.getAllRushersByPlayerName(playerName.toLowerCase());
-
-            return sortLongestRun(rushers, longestRunSortable.get(), pageable);
-        }
-
         return rusherRepository.findAllByPlayerName(playerName.toLowerCase(), pageable);
     }
 
