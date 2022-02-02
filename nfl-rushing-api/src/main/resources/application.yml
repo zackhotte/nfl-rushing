@@ -1,9 +1,11 @@
 spring:
-    jpa:  
+    jpa:
+        spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
         hibernate:
             ddl-auto: create  
         database-platform: org.hibernate.dialect.PostgreSQLDialect  
     datasource:  
-        url: "jdbc:postgresql://localhost:5432/nfl"  
-        username: postgres 
-        password: postgres
+        url: jdbc:h2:mem:nfl
+        username: sa
+        password: password
+        driverClassName: org.h2.Driver

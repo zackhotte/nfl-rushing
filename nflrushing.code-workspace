@@ -6,5 +6,8 @@
 		{
 			"path": "nfl-rushing-ui"
 		}
-	]
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic"
+	}
 }
